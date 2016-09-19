@@ -13,8 +13,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    adc7kboard.cpp \
+    adc7kchannel.cpp \
+    adc7kdisplay.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    adc7kboard.h \
+    adc7kchannel.h \
+    adc7kdisplay.h
 
 FORMS    += mainwindow.ui
