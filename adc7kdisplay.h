@@ -115,6 +115,8 @@ private:
     QVector<qint16> __channelData[MaxChannelNumber];
     qint16 __min[MaxChannelNumber], __med[MaxChannelNumber], __max[MaxChannelNumber];
 
+    bool __autoScale;
+
     int inc125(int input, int limit);
     int dec125(int input);
 

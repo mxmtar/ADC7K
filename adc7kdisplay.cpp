@@ -26,6 +26,8 @@ Adc7kDisplay::Adc7kDisplay(QWidget *parent) : QWidget(parent)
     __channelColor[6] = QColor(255, 102, 0); // orange
     __channelColor[7] = QColor(244, 164, 96); // brown
 
+    __autoScale = true;
+
     __xTime = false;
     __scaleX = 100.0f / __samplesDiv;
     __offsetX = 0;
@@ -110,16 +112,26 @@ Adc7kDisplay::Adc7kDisplay(QWidget *parent) : QWidget(parent)
     __voltDivValueLabel->setAlignment(Qt::AlignCenter);
     __yControlGroupBoxLayout->addWidget(__voltDivValueLabel);
     __voltDivDial = new QDial();
-    __voltDivDialValue = __voltDivDial->value();
+    __voltDivDial->setMinimum(0);
+    __voltDivDial->setMaximum(16);
+    __voltDivDial->setValue(8);
+    __voltDivDial->setSingleStep(1);
+    __voltDivDial->setPageStep(1);
     __voltDivDial->setWrapping(true);
+    __voltDivDialValue = __voltDivDial->value();
     connect(__voltDivDial, SIGNAL(valueChanged(int)), this, SLOT(on_voltDivDial_valueChanged(int)));
     __yControlGroupBoxLayout->addWidget(__voltDivDial);
     __voltDivLabel = new QLabel(QString("Points/DIV"));
     __voltDivLabel->setAlignment(Qt::AlignCenter);
     __yControlGroupBoxLayout->addWidget(__voltDivLabel);
     __voltLevelDial = new QDial();
-    __voltLevelDialValue = __voltLevelDial->value();
+    __voltLevelDial->setMinimum(0);
+    __voltLevelDial->setMaximum(16);
+    __voltLevelDial->setValue(8);
+    __voltLevelDial->setSingleStep(1);
+    __voltLevelDial->setPageStep(1);
     __voltLevelDial->setWrapping(true);
+    __voltLevelDialValue = __voltLevelDial->value();
     connect(__voltLevelDial, SIGNAL(valueChanged(int)), this, SLOT(on_voltLevelDial_valueChanged(int)));
     __yControlGroupBoxLayout->addWidget(__voltLevelDial);
     __voltLevelLabel = new QLabel(QString("Level"));
@@ -149,11 +161,14 @@ Adc7kDisplay::Adc7kDisplay(QWidget *parent) : QWidget(parent)
     __timeDivValueLabel->setAlignment(Qt::AlignCenter);
     __xControlGroupBoxLayout->addWidget(__timeDivValueLabel);
     __timeDivDial = new QDial();
-    __timeDivDialValue = __timeDivDial->value();
+    __timeDivDial->setMinimum(0);
+    __timeDivDial->setMaximum(16);
+    __timeDivDial->setValue(8);
     __timeDivDial->setSingleStep(1);
     __timeDivDial->setPageStep(1);
-    connect(__timeDivDial, SIGNAL(valueChanged(int)), this, SLOT(on_timeDivDial_valueChanged(int)));
     __timeDivDial->setWrapping(true);
+    __timeDivDialValue = __timeDivDial->value();
+    connect(__timeDivDial, SIGNAL(valueChanged(int)), this, SLOT(on_timeDivDial_valueChanged(int)));
     __xControlGroupBoxLayout->addWidget(__timeDivDial);
     __timeDivLabel = new QLabel(QString("Samples/DIV"));
     __timeDivLabel->setAlignment(Qt::AlignCenter);
@@ -305,6 +320,9 @@ void Adc7kDisplay::paintEvent(QPaintEvent *)
 
 void Adc7kDisplay::resizeEvent(QResizeEvent *)
 {
+    if (__autoScale) {
+        autoscale();
+    }
     update();
 }
 
@@ -392,7 +410,11 @@ void Adc7kDisplay::updateData(int index)
     __med[index * 2 + 0] = (__max[index * 2 + 0] + __min[index * 2 + 0] + 1) / 2;
     __med[index * 2 + 1] = (__max[index * 2 + 1] + __min[index * 2 + 1] + 1) / 2;
     if (index == 3) {
-        update();
+        if (__autoScale) {
+            autoscale();
+        } else {
+            update();
+        }
     }
 }
 
@@ -418,54 +440,88 @@ void Adc7kDisplay::autoscale()
     if ((__currentChannel >= 0) && (__currentChannel < MaxChannelNumber)) {
         __voltDivValueLabel->setText(QString("%1").arg(__pointsDiv[__currentChannel]));
     }
+    __autoScale = true;
 }
 
 void Adc7kDisplay::on_timeDivDial_valueChanged(int value)
 {
-    if (value > __timeDivDialValue) {
-        __samplesDiv = inc125(__samplesDiv, 1000000);
-        __timeDivValueLabel->setText(QString("%1").arg(__samplesDiv));
-        __scaleX = 100.0f / __samplesDiv;
-        update();
-    } else if (value < __timeDivDialValue) {
+    if ((value < __timeDivDialValue) || ((value == (__timeDivDial->maximum() - 1)) && (__timeDivDialValue == 0))) {
         __samplesDiv = dec125(__samplesDiv);
         __timeDivValueLabel->setText(QString("%1").arg(__samplesDiv));
         __scaleX = 100.0f / __samplesDiv;
         update();
+        if (value == __timeDivDial->minimum()) {
+            __timeDivDialValue = 0;
+        } else {
+            __timeDivDialValue = value;
+        }
+    } else if (value > __timeDivDialValue) {
+        __samplesDiv = inc125(__samplesDiv, 1000000);
+        __timeDivValueLabel->setText(QString("%1").arg(__samplesDiv));
+        __scaleX = 100.0f / __samplesDiv;
+        update();
+        if (value == __timeDivDial->maximum()) {
+            __timeDivDialValue = 0;
+        } else {
+            __timeDivDialValue = value;
+        }
     }
-    __timeDivDialValue = value;
 }
 
 void Adc7kDisplay::on_voltDivDial_valueChanged(int value)
 {
     if ((__currentChannel >= 0) && (__currentChannel < MaxChannelNumber)) {
-       if (value > __voltDivDialValue) {
-           __pointsDiv[__currentChannel] = inc125(__pointsDiv[__currentChannel], 20000);
-           __voltDivValueLabel->setText(QString("%1").arg(__pointsDiv[__currentChannel]));
-           __scaleY[__currentChannel] = 100.0f / __pointsDiv[__currentChannel];
+        if ((value < __voltDivDialValue) || ((value == (__voltDivDial->maximum() - 1)) && (__voltDivDialValue == 0))) {
+            __pointsDiv[__currentChannel] = dec125(__pointsDiv[__currentChannel]);
+            __voltDivValueLabel->setText(QString("%1").arg(__pointsDiv[__currentChannel]));
+            __scaleY[__currentChannel] = 100.0f / __pointsDiv[__currentChannel];
+            update();
+            if (value == __voltDivDial->minimum()) {
+                __voltDivDialValue = 0;
+            } else {
+                __voltDivDialValue = value;
+            }
+        } else if (value > __voltDivDialValue) {
+            __pointsDiv[__currentChannel] = inc125(__pointsDiv[__currentChannel], 20000);
+            __voltDivValueLabel->setText(QString("%1").arg(__pointsDiv[__currentChannel]));
+            __scaleY[__currentChannel] = 100.0f / __pointsDiv[__currentChannel];
            update();
-       } else if (value < __voltDivDialValue) {
-           __pointsDiv[__currentChannel] = dec125(__pointsDiv[__currentChannel]);
-           __voltDivValueLabel->setText(QString("%1").arg(__pointsDiv[__currentChannel]));
-           __scaleY[__currentChannel] = 100.0f / __pointsDiv[__currentChannel];
-           update();
+           if (value == __voltDivDial->maximum()) {
+               __voltDivDialValue = 0;
+           } else {
+               __voltDivDialValue = value;
+           }
        }
+        __autoScale = false;
+        __showLimitsMarker = true;
+        __showLimitsMarkerTimer->start(5000);
     }
-    __voltDivDialValue = value;
 }
 
 void Adc7kDisplay::on_voltLevelDial_valueChanged(int value)
 {
     if ((__currentChannel >= 0) && (__currentChannel < MaxChannelNumber)) {
-       if (value > __voltLevelDialValue) {
-           __offsetY[__currentChannel] -= 10;
-           update();
-       } else if (value < __voltLevelDialValue) {
-           __offsetY[__currentChannel] += 10;
-           update();
-       }
+        if ((value < __voltLevelDialValue) || ((value == (__voltLevelDial->maximum() - 1)) && (__voltLevelDialValue == 0))) {
+            __offsetY[__currentChannel] += 10;
+            update();
+            if (value == __voltLevelDial->minimum()) {
+                __voltLevelDialValue = 0;
+            } else {
+                __voltLevelDialValue = value;
+            }
+        } else if (value > __voltLevelDialValue) {
+            __offsetY[__currentChannel] -= 10;
+            update();
+            if (value == __voltLevelDial->maximum()) {
+                __voltLevelDialValue = 0;
+            } else {
+                __voltLevelDialValue = value;
+            }
+        }
+        __autoScale = false;
+        __showLimitsMarker = true;
+        __showLimitsMarkerTimer->start(5000);
     }
-    __voltLevelDialValue = value;
 }
 
 int Adc7kDisplay::inc125(int input, int limit)
