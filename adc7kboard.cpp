@@ -206,6 +206,27 @@ void Adc7kBoard::adcWrite(quint8 addr, quint16 data)
     }
 }
 
+quint32 Adc7kBoard::regRead(quint32 addr)
+{
+    quint32 res = 0;
+    QFile file(__path);
+    if (file.open(QIODevice::ReadOnly)) {
+        file.seek(0x80000000 + addr);
+        res = file.read(NULL, 4);
+        file.close();
+    }
+    return res;
+}
+
+void Adc7kBoard::regWrite(quint32 addr, quint32 data)
+{
+    QFile file(__path);
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(QString("register[%1].write(0x%2)").arg(addr, 2, 10).arg(data, 8, 16).toLatin1());
+        file.close();
+    }
+}
+
 void Adc7kBoard::run()
 {
     bool done[MaxChannelNumber];

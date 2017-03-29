@@ -57,6 +57,8 @@ public slots:
     void setUpdateFrequency(int frequency);
     void adcReset();
     void adcWrite(quint8 addr, quint16 data);
+    quint32 regRead(quint32 addr);
+    void regWrite(quint32 addr, quint32 data);
 
 private:
     QString __driver;
