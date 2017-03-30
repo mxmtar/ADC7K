@@ -63,13 +63,13 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>300</width>
+          <width>250</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>300</width>
+          <width>250</width>
           <height>16777215</height>
          </size>
         </property>
@@ -103,15 +103,15 @@
               </sizepolicy>
              </property>
              <property name="currentIndex">
-              <number>5</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="generalPage">
               <property name="geometry">
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>290</height>
+                <width>242</width>
+                <height>382</height>
                </rect>
               </property>
               <property name="sizePolicy">
@@ -209,199 +209,72 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="channels12Page">
+             <widget class="QWidget" name="registersPage">
               <property name="geometry">
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>290</height>
+                <width>242</width>
+                <height>382</height>
                </rect>
               </property>
               <attribute name="label">
-               <string>Channels 1 &amp;&amp; 2</string>
+               <string>Registers</string>
               </attribute>
               <layout class="QFormLayout" name="formLayout_3">
                <item row="0" column="0">
-                <layout class="QFormLayout" name="channels12FormLayout">
+                <layout class="QFormLayout" name="registersFormLayout">
                  <property name="fieldGrowthPolicy">
                   <enum>QFormLayout::FieldsStayAtSizeHint</enum>
                  </property>
                  <item row="0" column="0">
-                  <widget class="QLabel" name="channels12BufferAddressLabel">
+                  <widget class="QLabel" name="registerAddressLabel">
                    <property name="text">
-                    <string>Buffer Address</string>
+                    <string>Address</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="0">
-                  <widget class="QLabel" name="channels12BufferSizeLabel">
+                  <widget class="QLabel" name="registerValueLabel">
                    <property name="text">
-                    <string>Buffer Size</string>
+                    <string>Value</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QLabel" name="channels12BufferAddressValueLabel">
-                   <property name="text">
-                    <string>unknown</string>
+                  <widget class="QSpinBox" name="registerAddressSpinBox">
+                   <property name="maximum">
+                    <number>31</number>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="channels12BufferSizeValueLabel">
-                   <property name="text">
-                    <string>unknown</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="channels34Page">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>290</width>
-                <height>290</height>
-               </rect>
-              </property>
-              <attribute name="label">
-               <string>Channels 3 &amp;&amp; 4</string>
-              </attribute>
-              <layout class="QFormLayout" name="formLayout_4">
-               <item row="0" column="0">
-                <layout class="QFormLayout" name="channels34FormLayout">
-                 <property name="fieldGrowthPolicy">
-                  <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-                 </property>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="channels34BufferSizeLabel">
-                   <property name="text">
-                    <string>Buffer Size</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="channels34BufferSizeValueLabel">
-                   <property name="text">
-                    <string>unknown</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="channels34BufferAddressLabel">
-                   <property name="text">
-                    <string>Buffer Address</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QLabel" name="channels34BufferAddressValueLabel">
-                   <property name="text">
-                    <string>unknown</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="channels56Page">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>290</width>
-                <height>290</height>
-               </rect>
-              </property>
-              <attribute name="label">
-               <string>Channels 5 &amp;&amp; 6</string>
-              </attribute>
-              <layout class="QFormLayout" name="formLayout_5">
-               <item row="0" column="0">
-                <layout class="QFormLayout" name="channels56FormLayout">
-                 <property name="fieldGrowthPolicy">
-                  <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-                 </property>
                  <item row="2" column="0">
-                  <widget class="QLabel" name="channels56BufferSizeLabel">
+                  <widget class="QPushButton" name="registerReadPushButton">
                    <property name="text">
-                    <string>Buffer Size</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="channels56BufferAddressLabel">
-                   <property name="text">
-                    <string>Buffer Address</string>
+                    <string>Read</string>
                    </property>
                   </widget>
                  </item>
                  <item row="2" column="1">
-                  <widget class="QLabel" name="channels56BufferSizeValueLabel">
+                  <widget class="QPushButton" name="registerWritePushButton">
                    <property name="text">
-                    <string>unknown</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QLabel" name="channels56BufferAddressValueLabel">
-                   <property name="text">
-                    <string>unknown</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="channels78Page">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>290</width>
-                <height>290</height>
-               </rect>
-              </property>
-              <attribute name="label">
-               <string>Channels 7 &amp;&amp; 8</string>
-              </attribute>
-              <layout class="QFormLayout" name="formLayout_6">
-               <item row="0" column="0">
-                <layout class="QFormLayout" name="channels78FormLayout">
-                 <property name="fieldGrowthPolicy">
-                  <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-                 </property>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="channels78BufferSizeLabel">
-                   <property name="text">
-                    <string>Buffer Size</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="channels78BufferAddressLabel">
-                   <property name="text">
-                    <string>Buffer Address</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLabel" name="channels78BufferSizeValueLabel">
-                   <property name="text">
-                    <string>unknown</string>
+                    <string>Write</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLabel" name="channels78BufferAddressValueLabel">
+                  <widget class="QLineEdit" name="registerValueLineEdit">
+                   <property name="maximumSize">
+                    <size>
+                     <width>96</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
                    <property name="text">
-                    <string>unknown</string>
+                    <string>0x00000000</string>
+                   </property>
+                   <property name="maxLength">
+                    <number>10</number>
                    </property>
                   </widget>
                  </item>
@@ -414,8 +287,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>290</height>
+                <width>242</width>
+                <height>382</height>
                </rect>
               </property>
               <attribute name="label">
@@ -511,7 +384,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>29</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuView">
@@ -523,7 +396,7 @@
    </widget>
    <widget class="QMenu" name="menuSystem">
     <property name="title">
-     <string>System</string>
+     <string>&amp;System</string>
     </property>
     <addaction name="actionQuit"/>
    </widget>

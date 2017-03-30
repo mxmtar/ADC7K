@@ -59,17 +59,8 @@ void MainWindow::fillBoardInfo(Adc7kBoard *board)
     ui->samplerLengthSpinBox->setMinimum(1);
     ui->samplerLengthSpinBox->setMaximum(board->samplerMaxLength());
 
-    ui->channels12BufferAddressValueLabel->setText(QString("0x%1").arg(board->channel("12")->bufferAddress(), 8, 16));
-    ui->channels12BufferSizeValueLabel->setText(QString("%1 KiB").arg(board->channel("12")->bufferSize() / 1024));
-
-    ui->channels34BufferAddressValueLabel->setText(QString("0x%1").arg(board->channel("34")->bufferAddress(), 8, 16));
-    ui->channels34BufferSizeValueLabel->setText(QString("%1 KiB").arg(board->channel("34")->bufferSize() / 1024));
-
-    ui->channels56BufferAddressValueLabel->setText(QString("0x%1").arg(board->channel("56")->bufferAddress(), 8, 16));
-    ui->channels56BufferSizeValueLabel->setText(QString("%1 KiB").arg(board->channel("56")->bufferSize() / 1024));
-
-    ui->channels78BufferAddressValueLabel->setText(QString("0x%1").arg(board->channel("78")->bufferAddress(), 8, 16));
-    ui->channels78BufferSizeValueLabel->setText(QString("%1 KiB").arg(board->channel("78")->bufferSize() / 1024));
+    ui->registerAddressSpinBox->setValue(1);
+    ui->registerValueLineEdit->setText(QString("0x%1").arg(board->regRead(1), 8, 16, QChar('0')));
 
     ui->adc7kDisplayWidget->setBoard(board);
 }
@@ -144,4 +135,24 @@ void MainWindow::on_adcResetPushButton_clicked()
 void MainWindow::on_adcWritePushButton_clicked()
 {
     Adc7kBoard::boardList[boardComboBox->currentIndex()]->adcWrite(ui->adcAddressSpinBox->value(), ui->adcDataSpinBox->value());
+}
+
+void MainWindow::on_registerReadPushButton_clicked()
+{
+    ui->registerValueLineEdit->setText(QString("0x%1").arg(Adc7kBoard::boardList[boardComboBox->currentIndex()]->regRead(ui->registerAddressSpinBox->value()), 8, 16, QChar('0')));
+}
+
+void MainWindow::on_registerWritePushButton_clicked()
+{
+    bool ok;
+    quint32 data = ui->registerValueLineEdit->text().toUInt(&ok, 16);
+
+    if (ok) {
+        Adc7kBoard::boardList[boardComboBox->currentIndex()]->regWrite(ui->registerAddressSpinBox->value(), data);
+    }
+}
+
+void MainWindow::on_registerAddressSpinBox_valueChanged(int index)
+{
+    ui->registerValueLineEdit->setText(QString("0x%1").arg(Adc7kBoard::boardList[boardComboBox->currentIndex()]->regRead(index), 8, 16, QChar('0')));
 }

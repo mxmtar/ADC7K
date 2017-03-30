@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# mkdist
+# usage: mkdist [tag]
+
+if [ "${1}" ]; then
+	TAG=${1}
+	VERSION=${1}
+else
+	TAG=HEAD
+	HASH=`git log -1 --pretty=%h`
+	if [ -f .version ]; then
+		VERSION=`cat .version`-${HASH}
+	else
+		VERSION=unknown-${HASH}
+	fi
+fi
+
+./mkverhdr ADC7K ${VERSION} > version.h
+
+rm -f ADC7K-${VERSION}.tar.gz
+rm -rf ADC7K-${VERSION}
+
+git archive --format=tar.gz --prefix=ADC7K-${VERSION}/ ${TAG} > ADC7K-${VERSION}.tar.gz
+
+tar -xzf ADC7K-${VERSION}.tar.gz
+rm -f ADC7K-${VERSION}/.gitignore
+rm -f ADC7K-${VERSION}/.version
+rm -f ADC7K-${VERSION}/mkdist
+rm -f ADC7K-${VERSION}/mkverhdr
+cp version.h ADC7K-${VERSION}/version.h
+git log > ADC7K-${VERSION}/ChangeLog
+tar -czf ADC7K-${VERSION}.tar.gz ADC7K-${VERSION}
+
+rm -rf ADC7K-${VERSION}
+
+# end of mkdist

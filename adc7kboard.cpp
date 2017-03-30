@@ -1,5 +1,6 @@
 #include <sys/select.h>
 
+#include <fcntl.h>
 #include <unistd.h>
 
 #include "adc7kboard.h"
@@ -209,12 +210,15 @@ void Adc7kBoard::adcWrite(quint8 addr, quint16 data)
 quint32 Adc7kBoard::regRead(quint32 addr)
 {
     quint32 res = 0;
-    QFile file(__path);
-    if (file.open(QIODevice::ReadOnly)) {
-        file.seek(0x80000000 + addr);
-        res = file.read(NULL, 4);
-        file.close();
+    int fd = -1;
+
+    if ((fd = open(__path.toUtf8().constData(), O_RDONLY | O_NONBLOCK)) > -1) {
+        if (lseek(fd, 0x80000 + addr, SEEK_SET) > -1) {
+            res = read(fd, NULL, 0);
+        }
+        close(fd);
     }
+
     return res;
 }
 

@@ -39,6 +39,12 @@ private slots:
 
     void on_adcWritePushButton_clicked();
 
+    void on_registerReadPushButton_clicked();
+
+    void on_registerWritePushButton_clicked();
+
+    void on_registerAddressSpinBox_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 
